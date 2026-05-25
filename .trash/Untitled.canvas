@@ -1,0 +1,8 @@
+{
+	"nodes":[
+		{"id":"1fb2ef3bbf08d2bc","type":"text","text":"base: pendulum clock with weight drive","x":-464,"y":-136,"width":250,"height":60},
+		{"id":"9ff4f14f77862dc3","type":"text","text":"compile reusable parts from pre-existing clock","x":-64,"y":-233,"width":250,"height":60},
+		{"id":"dd478a7829d30207","type":"text","text":"design barrel with mainspring","x":-111,"y":-48,"width":250,"height":60}
+	],
+	"edges":[]
+}
