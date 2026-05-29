@@ -52,7 +52,7 @@ The project manager works with the Frontmatter of the markdown-files. The expect
 
 ### Main_page
 
-`
+```
 ---
 id: "PROJ-###"
 name: null
@@ -63,11 +63,11 @@ budget: null
 tags:
   - Research-project
 ---
-`
+```
 
 ### Task
 
-`
+```
 ---
 id: "TASK-###"
 status: to-do
@@ -81,11 +81,11 @@ purchases: null
 tags:
   - Task
 ---
-`
+```
 
 ### Research_note
 
-`
+```
 ---
 id: "RES-###"
 source: null
@@ -93,11 +93,11 @@ source_date: null
 tags:
   - Research
 ---
-`
+```
 
 ### Purchase
 
-`
+```
 ---
 id: "PUR-###"
 purchase_task: []
@@ -110,11 +110,11 @@ tax: null
 tags:
   - Purchase
 ---
-`
+```
 
 ### Supplier
 
-`
+```
 ---
 id: "SUP-###"
 name: none
@@ -123,5 +123,5 @@ country: none
 tags:
   - Supplier
 ---
-`
+```
 
