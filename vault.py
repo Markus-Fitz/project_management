@@ -18,7 +18,7 @@ def read_file(filepath: Path) -> tuple[dict, str]:
 
 # ── Creating ──────────────────────────────────────────────────────────────────
 
-def copy_from_template(template_file: Path, destination: Path) -> None:
+def copy_file_template(template_file: Path, destination: Path) -> None:
     """
     Copy a template file to a destination path.
     Raises FileExistsError if the destination already exists.
@@ -26,7 +26,7 @@ def copy_from_template(template_file: Path, destination: Path) -> None:
 
     Example:
         copy_from_template(
-            template_file = TEMPLATES_PATH / "default" / "README.md",
+            template_file = TEMPLATES_PATH / "Template_development" / "README.md",
             destination   = PROJECTS_PATH / "my-project" / "README.md"
         )
     """
@@ -35,8 +35,28 @@ def copy_from_template(template_file: Path, destination: Path) -> None:
     if not template_file.exists():
         raise FileNotFoundError(f"Template not found: {template_file}")
 
+    destination.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(template_file, destination)
 
+def copy_folder_template(name: str, id: int, template_folder: Path = Path(__file__).parent.parent / "project_templates" / "Template_development") -> None:
+    """
+    Copy a template folder structure (vault) to a destination path.
+    Raises FileExistsError if the destination already exists.
+    Raises FileNotFoundError if the template does not exist.
+
+    Example:
+        copy_from_template(
+            template_file = TEMPLATES_PATH / "Template_development"
+            destination   = PROJECTS_PATH / "my-project"
+        )
+    """
+    project_path = Path = Path(__file__).parent.parent / name
+    if project_path.exists():
+        raise FileExistsError(f"Project folder already exsists: {project_path}")
+    if not template_folder.exists():
+        raise FileNotFoundError(f"Template folder was not found: {template_folder}")
+    
+    shutil.copytree(template_folder, project_path)
 
 # ── Writing ───────────────────────────────────────────────────────────────────
 
