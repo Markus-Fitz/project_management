@@ -1,4 +1,5 @@
-from vault import read_file, update_frontmatter, copy_file_template, copy_folder_template
+#from vault import read_file, update_frontmatter, copy_file_template, copy_folder_template
+from commands import initialize_project
 from pathlib import Path
 
 # ── Vault location ────────────────────────────────────────────────────────────
@@ -22,25 +23,28 @@ DEVELOPMENT_TEMPLATE_PATH = PARENT_DIR / "project_templates" / "Template_develop
 RESEARCH_TEMPLATE_PATH = PARENT_DIR / "project_templates" / "Template_research"
 
 # Create a folder from a template directory
-try:
-    copy_folder_template("test_project_from_template_1")
-except FileExistsError:
-    print("A project with that name already exists.")
-except FileNotFoundError:
-    print("The template could not be found.")
+#try:
+#    copy_folder_template("test_project_from_template_1")
+#except FileExistsError:
+#    print("A project with that name already exists.")
+#except FileNotFoundError:
+#    print("The template could not be found.")
 
 # File exists error should be thrown
-try:
-    copy_folder_template("test_project_from_template_1")
-except FileExistsError:
-    print("A project with that name already exists.")
-except FileNotFoundError:
-    print("The template could not be found.")
+#try:
+#    copy_folder_template("test_project_from_template_1")
+#except FileExistsError:
+#    print("A project with that name already exists.")
+#except FileNotFoundError:
+#    print("The template could not be found.")
 
 # The template could not be found error should be thrown
-try:
-    copy_folder_template("test_project_from_template_2", PARENT_DIR / "non-existant-folder")
-except FileExistsError:
-    print("A project with that name already exists.")
-except FileNotFoundError:
-    print("The template could not be found.")
+#try:
+#    copy_folder_template("test_project_from_template_2", PARENT_DIR / "non-existant-folder")
+#except FileExistsError:
+#    print("A project with that name already exists.")
+#except FileNotFoundError:
+#    print("The template could not be found.")
+
+
+initialize_project("test_project_created_by_initialize_project", "Template_research")
