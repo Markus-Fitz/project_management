@@ -28,12 +28,28 @@ update_frontmatter(PROJECT_TASK_DIR / "test_task.md", {"status": "active", "id":
 
 # creating Purchase directory and new Purchase.md from template
 copy_file_template(DEVELOPMENT_TEMPLATE_PATH / "Templates" / "Purchase.md", PROJECT_PURCHASE_DIR / "test_purchase.md")
+update_frontmatter(PROJECT_PURCHASE_DIR / "test_purchase.md", {"amount": 100, "id": "PUR-000"})
 
 # creating Supplier directory and new Supplier.md from template
 copy_file_template(DEVELOPMENT_TEMPLATE_PATH / "Templates" / "Supplier.md", PROJECT_SUPPLIER_DIR / "test_supplier.md")
+update_frontmatter(PROJECT_SUPPLIER_DIR / "test_supplier.md", {"name": "Amazon", "id": "SUP-000"})
 
 # creating Research_note directory and new Research_note.md from template
 copy_file_template(DEVELOPMENT_TEMPLATE_PATH / "Templates" / "Research_note.md", PROJECT_RESEARCH_NOTE_DIR / "test_research_note.md")
+update_frontmatter(PROJECT_RESEARCH_NOTE_DIR / "test_research_note.md", {"source": "www.test_source.org", "id": "RES-000"})
 
-meta, body = read_file(PROJECT_DIR / "Tasks" / "test_task.md")
+meta, body = read_file(PROJECT_TASK_DIR / "test_task.md")
+print("Updated Task meta: \n")
+print(meta)  # should show updated fields
+
+meta, body = read_file(PROJECT_PURCHASE_DIR / "test_purchase.md")
+print("Updated Purchase meta: \n")
+print(meta)  # should show updated fields
+
+meta, body = read_file(PROJECT_SUPPLIER_DIR / "test_supplier.md")
+print("Updated Supplier meta: \n")
+print(meta)  # should show updated fields
+
+meta, body = read_file(PROJECT_RESEARCH_NOTE_DIR / "test_research_note.md")
+print("Updated Research-note meta: \n")
 print(meta)  # should show updated fields
