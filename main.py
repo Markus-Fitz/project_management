@@ -1,4 +1,3 @@
-import os
 from vault import read_file, update_frontmatter, copy_file_template, copy_folder_template
 from pathlib import Path
 
@@ -53,3 +52,4 @@ print(meta)  # should show updated fields
 meta, body = read_file(PROJECT_RESEARCH_NOTE_DIR / "test_research_note.md")
 print("Updated Research-note meta: \n")
 print(meta)  # should show updated fields
+
