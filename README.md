@@ -52,10 +52,76 @@ The project manager works with the Frontmatter of the markdown-files. The expect
 
 ### Main_page
 
+`
+---
+id: "PROJ-###"
+name: null
+status: planning
+created_on: null
+target_date: null
+budget: null
+tags:
+  - Research-project
+---
+`
+
 ### Task
+
+`
+---
+id: "TASK-###"
+status: to-do
+created_on: null
+start_date: null
+parent_task: []
+priority: 500
+time_spent: 0
+dependent_on: []
+purchases: null
+tags:
+  - Task
+---
+`
 
 ### Research_note
 
+`
+---
+id: "RES-###"
+source: null
+source_date: null
+tags:
+  - Research
+---
+`
+
 ### Purchase
 
+`
+---
+id: "PUR-###"
+purchase_task: []
+purchase_date: null
+arrival_date: null
+supplier: []
+currency: EUR
+amount: null
+tax: null
+tags:
+  - Purchase
+---
+`
+
 ### Supplier
+
+`
+---
+id: "SUP-###"
+name: none
+website: none
+country: none
+tags:
+  - Supplier
+---
+`
+
