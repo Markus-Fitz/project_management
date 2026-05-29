@@ -1,18 +1,27 @@
-# test manually in a python shell or a scratch file
-from vault import read_file, write_file, update_frontmatter
+import os
+from vault import read_file, update_frontmatter, copy_from_template
 from pathlib import Path
 
-p = Path("test.md")
+# ── Vault location ────────────────────────────────────────────────────────────
 
-# create a test file
-write_file(p, {"id": "test", "status": "todo"}, "hello world")
+project_name = "test_project"
 
-# read it back
-meta, body = read_file(p)
-print(meta)   # {"id": "test", "status": "todo"}
-print(body)   # "hello world"
+# Name of the parent directory everything happens in
+PARENT_DIR = Path(__file__).parent.parent
 
-# update one field
-update_frontmatter(p, {"status": "done"})
-meta, body = read_file(p)
-print(meta)   # {"id": "test", "status": "done", ...}
+# Name of the project directory which is subject to management
+PROJECT_DIR = PARENT_DIR / project_name
+PROJECT_TASK_DIR = PROJECT_DIR / "Tasks"
+
+# Path to template directories
+DEVELOPMENT_TEMPLATE_PATH = PARENT_DIR / "project_templates" / "Template_development"
+RESEARCH_TEMPLATE_PATH = PARENT_DIR / "project_templates" / "Template_research"
+
+# creating project directory and 
+PROJECT_TASK_DIR.mkdir(parents=True, exist_ok=True)
+copy_from_template(DEVELOPMENT_TEMPLATE_PATH / "Templates" / "Task.md", PROJECT_DIR / "Tasks" / "test_task.md")
+
+update_frontmatter(PROJECT_DIR / "Tasks/test_task.md", {"status": "active", "id": "test-project"})
+
+meta, body = read_file(PROJECT_DIR / "Tasks/test_task.md")
+print(meta)  # should show updated fields
