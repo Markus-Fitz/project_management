@@ -1,19 +1,6 @@
-# vault.py
-# Responsible for reading and writing markdown files with YAML frontmatter.
-# All other modules import from here when they need to touch the vault files.
-
-import os
+import shutil
 from pathlib import Path
-import frontmatter  # pip install python-frontmatter
-
-
-# ── Vault location ────────────────────────────────────────────────────────────
-# Reads from environment variable, falls back to ~/vault
-# Set your vault path with: export PM_VAULT_PATH="/path/to/your/vault"
-
-VAULT_PATH = Path(os.environ.get("PM_VAULT_PATH", "~/vault")).expanduser()
-PROJECTS_PATH = VAULT_PATH / "Projects"
-
+import frontmatter
 
 # ── Reading ───────────────────────────────────────────────────────────────────
 
@@ -21,39 +8,37 @@ def read_file(filepath: Path) -> tuple[dict, str]:
     """
     Read a markdown file and return its frontmatter and body separately.
 
-    Returns:
-        frontmatter_data  -- dict of all YAML fields, e.g. {"id": "my-project", "status": "active"}
-        body              -- the markdown text below the frontmatter block
-    
     Example:
         meta, body = read_file(PROJECTS_PATH / "my-project" / "README.md")
         print(meta["status"])   # "active"
-        print(body)             # "This project is about..."
     """
     post = frontmatter.load(filepath)
     return dict(post.metadata), post.content
 
 
-# ── Writing ───────────────────────────────────────────────────────────────────
+# ── Creating ──────────────────────────────────────────────────────────────────
 
-def write_file(filepath: Path, metadata: dict, body: str = "") -> None:
+def copy_from_template(template_file: Path, destination: Path) -> None:
     """
-    Write a dict of frontmatter fields and a markdown body to a file.
-    Overwrites the file if it already exists.
+    Copy a template file to a destination path.
+    Raises FileExistsError if the destination already exists.
+    Raises FileNotFoundError if the template does not exist.
 
     Example:
-        write_file(
-            filepath = PROJECTS_PATH / "my-project" / "README.md",
-            metadata = {"id": "my-project", "status": "active"},
-            body     = "This project is about building a weather station."
+        copy_from_template(
+            template_file = TEMPLATES_PATH / "default" / "README.md",
+            destination   = PROJECTS_PATH / "my-project" / "README.md"
         )
     """
-    post = frontmatter.Post(content=body, **metadata)
-    with open(filepath, "wb") as f:
-        frontmatter.dump(post, f)
+    if destination.exists():
+        raise FileExistsError(f"File already exists: {destination}")
+    if not template_file.exists():
+        raise FileNotFoundError(f"Template not found: {template_file}")
+
+    shutil.copy2(template_file, destination)
 
 
-# ── Convenience: update only frontmatter fields ───────────────────────────────
+# ── Writing ───────────────────────────────────────────────────────────────────
 
 def update_frontmatter(filepath: Path, updates: dict) -> None:
     """
@@ -68,4 +53,7 @@ def update_frontmatter(filepath: Path, updates: dict) -> None:
     """
     metadata, body = read_file(filepath)
     metadata.update(updates)
-    write_file(filepath, metadata, body)
+
+    post = frontmatter.Post(content=body, **metadata)
+    with open(filepath, "w", encoding="utf-8") as f:
+        frontmatter.dump(post, f)
