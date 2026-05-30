@@ -47,4 +47,6 @@ RESEARCH_TEMPLATE_PATH = PARENT_DIR / "project_templates" / "Template_research"
 #    print("The template could not be found.")
 
 
-initialize_project("test_project_created_by_initialize_project", "Template_research")
+initialize_project("test_project_created_by_initialize_project_id-should-be-001", "Template_research")
+initialize_project("test_project_created_by_initialize_project_id-should-be-002", "Template_research")
+initialize_project("test_project_created_by_initialize_project_id-should-be-003", "Template_research")
