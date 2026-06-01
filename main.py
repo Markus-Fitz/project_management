@@ -1,5 +1,5 @@
 #from vault import read_file, update_frontmatter, copy_file_template, copy_folder_template
-from commands import initialize_project, add_task, add_research_note
+from commands import initialize_project, add_task, add_research_note, add_purchase
 from pathlib import Path
 
 # ── Vault location ────────────────────────────────────────────────────────────
@@ -58,3 +58,7 @@ add_research_note(PARENT_DIR / "test_dev-proj", "test_note_ID-should-be-002")
 
 add_research_note(PARENT_DIR / "test_res-proj", "test_note_ID-should-be-001")
 add_research_note(PARENT_DIR / "test_res-proj", "test_note_ID-should-be-002")
+
+add_purchase(PARENT_DIR / "test_dev-proj", "test_purchase_ID-should-fail", PARENT_DIR / "test_dev-proj" / "Tasks" / "test_task_ID-should-be-000.md") # should fail, as linked file does not exist
+add_purchase(PARENT_DIR / "test_dev-proj", "test_purchase_ID-should-be-001", PARENT_DIR / "test_dev-proj" / "Tasks" / "test_task_ID-should-be-001.md")
+add_purchase(PARENT_DIR / "test_dev-proj", "test_purchase_ID-should-be-002", PARENT_DIR / "test_dev-proj" / "Tasks" / "test_task_ID-should-be-002.md")

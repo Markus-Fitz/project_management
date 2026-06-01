@@ -60,3 +60,24 @@ def add_research_note(project_dir: Path, name: str):
         return
     next_id = get_next_id("*.md", "RES", project_dir / "Research_notes")
     update_frontmatter(research_note_path, {"id": next_id, "created_on": datetime.now().date()})
+
+def add_purchase(project_dir: Path, name: str, linked_file: Path):
+    """
+    Creates a new purchase in a project folder from the template file in that project folder.
+    Purchase name, id, created_on date and linked file (Task / Research_note) are always modified.
+    """
+    if not linked_file.is_file():
+        print("Linked file does not exist.")
+        return
+    file_name = name + ".md"
+    purchase_path = project_dir / "Purchases" / file_name
+    try:
+        copy_file_template(project_dir / "Templates" / "Purchase.md", purchase_path)
+    except FileExistsError:
+        print("A purchase file with that name already exists.")
+        return
+    except FileNotFoundError:
+        print("The Purchase template was not found.")
+        return
+    next_id = get_next_id("*.md", "PUR", project_dir / "Purchases")
+    update_frontmatter(purchase_path, {"id": next_id, "created_on": datetime.now().date(), "purchase_linked_file": f"[[{linked_file.stem}]]"})
