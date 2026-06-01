@@ -39,3 +39,21 @@ def initialize_project(project_name: str, template_name: str, starting_date:date
 
     # update frontmatter to match new project
     update_frontmatter(parent_path / project_name / "Main_page.md", {"id": next_id, "name": project_name, "created_on": str(starting_date)})
+
+def add_task(project_dir: Path, name: str):
+    """
+    Creates a new task in a project folder from the template file in that project folder.
+    Task name, id and created_on date are always modified.
+    """
+    file_name = name + ".md"
+    task_path = project_dir / "Tasks" / file_name
+    try:
+        copy_file_template(project_dir / "Templates" / "Task.md", task_path)
+    except FileExistsError:
+        print("A task file with that name already exists.")
+        return
+    except FileNotFoundError:
+        print("The Task template was not found.")
+        return
+    next_id = get_next_id("", "TASK", project_dir / "Tasks")
+    update_frontmatter(task_path, {"id": next_id, "created_on": datetime.now().date()})
