@@ -3,12 +3,12 @@ from datetime import datetime
 from pathlib import Path
 import re
 
-def get_next_id(file_name: str, abbrev: str, search_dir: Path) -> str:
+def get_next_id(glob_pattern: str, abbrev: str, search_dir: Path) -> str:
     """
     Looks for files matching file_name, extracts the id if it matches the format abbrev-xxx and returns the highest id + 1 in the same format.
     """
     highest = 0
-    for file in search_dir.glob("*/" + file_name):
+    for file in search_dir.glob(glob_pattern):
         meta, _ = read_file(file)
         # looks for string with pattern "PROJ-xxx" with xxx being an integer
         # Pattern has to match "PROJ-123"; "PROJ-###" or "PROJ-123-old" does not match
@@ -35,7 +35,7 @@ def initialize_project(project_name: str, template_name: str, starting_date:date
         return # exit out of function
     
     #look for highest ID in the current directory and iterate by one
-    next_id = get_next_id("Main_page.md", "PROJ", parent_path)
+    next_id = get_next_id("*/Main_page.md", "PROJ", parent_path)
 
     # update frontmatter to match new project
     update_frontmatter(parent_path / project_name / "Main_page.md", {"id": next_id, "name": project_name, "created_on": str(starting_date)})
@@ -55,5 +55,23 @@ def add_task(project_dir: Path, name: str):
     except FileNotFoundError:
         print("The Task template was not found.")
         return
-    next_id = get_next_id("", "TASK", project_dir / "Tasks")
+    next_id = get_next_id("*.md", "TASK", project_dir / "Tasks")
     update_frontmatter(task_path, {"id": next_id, "created_on": datetime.now().date()})
+
+def add_research_note(project_dir: Path, name: str):
+    """
+    Creates a new research_note in a project folder from the template file in that project folder.
+    Project_note name, id and created_on date are always modified.
+    """
+    file_name = name + ".md"
+    research_note_path = project_dir / "Research_notes" / file_name
+    try:
+        copy_file_template(project_dir / "Templates" / "Research_note.md", research_note_path)
+    except FileExistsError:
+        print("A research_note file with that name already exists.")
+        return
+    except FileNotFoundError:
+        print("The Research_note template was not found.")
+        return
+    next_id = get_next_id("*.md", "RES", project_dir / "Research_notes")
+    update_frontmatter(research_note_path, {"id": next_id, "created_on": datetime.now().date()})

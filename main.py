@@ -1,5 +1,5 @@
 #from vault import read_file, update_frontmatter, copy_file_template, copy_folder_template
-from commands import initialize_project
+from commands import initialize_project, add_task, add_research_note
 from pathlib import Path
 
 # ── Vault location ────────────────────────────────────────────────────────────
@@ -47,6 +47,14 @@ RESEARCH_TEMPLATE_PATH = PARENT_DIR / "project_templates" / "Template_research"
 #    print("The template could not be found.")
 
 
-initialize_project("test_project_created_by_initialize_project_id-should-be-001", "Template_research")
-initialize_project("test_project_created_by_initialize_project_id-should-be-002", "Template_research")
-initialize_project("test_project_created_by_initialize_project_id-should-be-003", "Template_research")
+initialize_project("test_dev-proj", "Template_development")
+initialize_project("test_res-proj", "Template_research")
+
+add_task(PARENT_DIR / "test_dev-proj", "test_task_ID-should-be-001")
+add_task(PARENT_DIR / "test_dev-proj", "test_task_ID-should-be-002")
+
+add_research_note(PARENT_DIR / "test_dev-proj", "test_note_ID-should-be-001")
+add_research_note(PARENT_DIR / "test_dev-proj", "test_note_ID-should-be-002")
+
+add_research_note(PARENT_DIR / "test_res-proj", "test_note_ID-should-be-001")
+add_research_note(PARENT_DIR / "test_res-proj", "test_note_ID-should-be-002")
