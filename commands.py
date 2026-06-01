@@ -3,19 +3,19 @@ from datetime import datetime
 from pathlib import Path
 import re
 
-def get_next_project_id() -> int:
+def get_next_id(file_name: str, abbrev: str, search_dir: Path) -> str:
     """
-    Looks for Main_page.md files, extracts the id and returns the highest id + 1 zero-padded to at least three digits.
+    Looks for files matching file_name, extracts the id if it matches the format abbrev-xxx and returns the highest id + 1 in the same format.
     """
     highest = 0
-    for main_page in Path(__file__).parent.parent.glob("*/Main_page.md"):
-        meta, body = read_file(main_page)
+    for file in search_dir.glob("*/" + file_name):
+        meta, _ = read_file(file)
         # looks for string with pattern "PROJ-xxx" with xxx being an integer
         # Pattern has to match "PROJ-123"; "PROJ-###" or "PROJ-123-old" does not match
-        match = re.fullmatch(r"PROJ-(\d+)", str(meta.get("id", "")))
+        match = re.fullmatch(rf"{abbrev}-(\d+)", str(meta.get("id", "")))
         if match:
             highest = max(highest, int(match.group(1)))
-    return f"PROJ-{highest + 1:03d}" # returns the highest id + 1 in zero-padded format with at least 3 digits
+    return f"{abbrev}-{highest + 1:03d}"
 
 def initialize_project(project_name: str, template_name: str, starting_date:datetime.date = datetime.now().date()) -> None:
     """
@@ -35,7 +35,7 @@ def initialize_project(project_name: str, template_name: str, starting_date:date
         return # exit out of function
     
     #look for highest ID in the current directory and iterate by one
-    next_id = get_next_project_id()
+    next_id = get_next_id("Main_page.md", "PROJ", parent_path)
 
     # update frontmatter to match new project
     update_frontmatter(parent_path / project_name / "Main_page.md", {"id": next_id, "name": project_name, "created_on": str(starting_date)})
