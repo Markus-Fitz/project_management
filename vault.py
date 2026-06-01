@@ -1,6 +1,7 @@
 import shutil
 from pathlib import Path
 import frontmatter
+import re
 
 def read_file(filepath: Path) -> tuple[dict, str]:
     """
@@ -48,3 +49,17 @@ def update_frontmatter(filepath: Path, updates: dict) -> None:
     post = frontmatter.Post(content=body, **metadata)
     with open(filepath, "w", encoding="utf-8") as f:
         frontmatter.dump(post, f)
+
+def get_next_id(glob_pattern: str, abbrev: str, search_dir: Path) -> str:
+    """
+    Looks for files matching file_name, extracts the id if it matches the format abbrev-xxx and returns the highest id + 1 in the same format.
+    """
+    highest = 0
+    for file in search_dir.glob(glob_pattern):
+        meta, _ = read_file(file)
+        # looks for string with pattern "PROJ-xxx" with xxx being an integer
+        # Pattern has to match "PROJ-123"; "PROJ-###" or "PROJ-123-old" does not match
+        match = re.fullmatch(rf"{abbrev}-(\d+)", str(meta.get("id", "")))
+        if match:
+            highest = max(highest, int(match.group(1)))
+    return f"{abbrev}-{highest + 1:03d}"

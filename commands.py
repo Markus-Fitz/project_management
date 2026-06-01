@@ -1,21 +1,6 @@
 from vault import copy_file_template, copy_folder_template, update_frontmatter, read_file
 from datetime import datetime
 from pathlib import Path
-import re
-
-def get_next_id(glob_pattern: str, abbrev: str, search_dir: Path) -> str:
-    """
-    Looks for files matching file_name, extracts the id if it matches the format abbrev-xxx and returns the highest id + 1 in the same format.
-    """
-    highest = 0
-    for file in search_dir.glob(glob_pattern):
-        meta, _ = read_file(file)
-        # looks for string with pattern "PROJ-xxx" with xxx being an integer
-        # Pattern has to match "PROJ-123"; "PROJ-###" or "PROJ-123-old" does not match
-        match = re.fullmatch(rf"{abbrev}-(\d+)", str(meta.get("id", "")))
-        if match:
-            highest = max(highest, int(match.group(1)))
-    return f"{abbrev}-{highest + 1:03d}"
 
 def initialize_project(project_name: str, template_name: str, starting_date:datetime.date = datetime.now().date()) -> None:
     """
