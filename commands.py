@@ -1,6 +1,7 @@
 from vault import copy_file_template, copy_folder_template, update_frontmatter, read_file, get_next_id
 from datetime import datetime
 from pathlib import Path
+import re
 
 def initialize_project(project_name: str, template_name: str, starting_date:datetime.date = datetime.now().date()) -> None:
     """
@@ -23,7 +24,7 @@ def initialize_project(project_name: str, template_name: str, starting_date:date
     # update frontmatter to match new project
     update_frontmatter(parent_path / project_name / "Main_page.md", {"id": next_id, "name": project_name, "created_on": str(starting_date)})
 
-def add_task(project_dir: Path, name: str):
+def add_task(project_dir: Path, name: str) -> None:
     """
     Creates a new task in a project folder from the template file in that project folder.
     Task name, id and created_on date are always modified.
@@ -41,7 +42,27 @@ def add_task(project_dir: Path, name: str):
     next_id = get_next_id("*.md", "TASK", project_dir / "Tasks")
     update_frontmatter(task_path, {"id": next_id, "created_on": datetime.now().date()})
 
-def add_research_note(project_dir: Path, name: str):
+def add_task_hours(task_path: Path, hours: float) -> None:
+    """
+    Adds a specified amount of hours to the current hour count.
+    """
+    meta, _ = read_file(task_path)
+    current_hours = float(meta.get("time_spent", ""))
+    hours += current_hours
+    update_frontmatter(task_path, {"time_spent": hours})
+
+def mark_task_done(task_path: Path) -> None:
+    """
+    Updates the frontmatter fields of a task and triggers corresponding logic.
+    """
+    meta, _ = read_file(task_path)
+    match = re.fullmatch(rf"done", str(meta.get("status", "")))
+    if match:
+        print(f"Task at filepath {task_path} is alredy marked as done.")
+        return
+    update_frontmatter(task_path, {"status": "done", "end_date": datetime.now().date()})
+
+def add_research_note(project_dir: Path, name: str) -> None:
     """
     Creates a new research_note in a project folder from the template file in that project folder.
     Project_note name, id and created_on date are always modified.
@@ -59,7 +80,7 @@ def add_research_note(project_dir: Path, name: str):
     next_id = get_next_id("*.md", "RES", project_dir / "Research_notes")
     update_frontmatter(research_note_path, {"id": next_id, "created_on": datetime.now().date()})
 
-def add_supplier(project_dir: Path, name: str):
+def add_supplier(project_dir: Path, name: str) -> None:
     """
     Creates a new supplier in a project folder from the template file in that project folder.
     Supplier name, id and created_on date are always modified.
@@ -77,7 +98,7 @@ def add_supplier(project_dir: Path, name: str):
     next_id = get_next_id("*.md", "SUP", project_dir / "Suppliers")
     update_frontmatter(supplier_path, {"id": next_id, "created_on": datetime.now().date()})
 
-def add_purchase(project_dir: Path, name: str, linked_file: Path, linked_supplier: Path):
+def add_purchase(project_dir: Path, name: str, linked_file: Path, linked_supplier: Path) -> None:
     """
     Creates a new purchase in a project folder from the template file in that project folder.
     Purchase name, id, created_on date, linked file (Task / Research_note) and Supplier are always modified.
