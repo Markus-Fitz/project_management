@@ -42,14 +42,14 @@ def add_task(project_dir: Path, name: str) -> None:
     next_id = get_next_id("*.md", "TASK", project_dir / "Tasks")
     update_frontmatter(task_path, {"id": next_id, "created_on": datetime.now().date()})
 
-def add_task_hours(task_path: Path, hours: float) -> None:
+def add_hours(path: Path, hours: float) -> None:
     """
     Adds a specified amount of hours to the current hour count.
     """
-    meta, _ = read_file(task_path)
+    meta, _ = read_file(path)
     current_hours = float(meta.get("time_spent", ""))
     hours += current_hours
-    update_frontmatter(task_path, {"time_spent": hours})
+    update_frontmatter(path, {"time_spent": hours})
 
 def mark_task_done(task_path: Path) -> None:
     """
