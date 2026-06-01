@@ -2,17 +2,12 @@ import shutil
 from pathlib import Path
 import frontmatter
 
-# ── Reading ───────────────────────────────────────────────────────────────────
-
 def read_file(filepath: Path) -> tuple[dict, str]:
     """
     Read a markdown file and return its frontmatter and body separately.
     """
     post = frontmatter.load(filepath)
     return dict(post.metadata), post.content
-
-
-# ── Creating ──────────────────────────────────────────────────────────────────
 
 def copy_file_template(template_file: Path, destination: Path) -> None:
     """
@@ -41,8 +36,6 @@ def copy_folder_template(name: str, template_folder: Path = Path(__file__).paren
         raise FileNotFoundError(f"Template folder was not found: {template_folder}")
     
     shutil.copytree(template_folder, project_path)
-
-# ── Writing ───────────────────────────────────────────────────────────────────
 
 def update_frontmatter(filepath: Path, updates: dict) -> None:
     """

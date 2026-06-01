@@ -5,7 +5,7 @@ import re
 
 def get_next_project_id() -> int:
     """
-    Looks for Main_page.md files, extracts the id and returns the highest id + 1.
+    Looks for Main_page.md files, extracts the id and returns the highest id + 1 zero-padded to at least three digits.
     """
     highest = 0
     for main_page in Path(__file__).parent.parent.glob("*/Main_page.md"):
