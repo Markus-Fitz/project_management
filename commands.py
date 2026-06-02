@@ -1,4 +1,4 @@
-from vault import copy_file_template, copy_folder_template, update_frontmatter, read_file, get_next_id
+from operations import copy_file_template, copy_folder_template, update_frontmatter, read_file, get_next_id
 from datetime import datetime
 from pathlib import Path
 import re
