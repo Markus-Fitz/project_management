@@ -7,7 +7,7 @@ def initialize_project(project_name: str, template_name: str, starting_date:date
     """
     Initializes a project from a template and sets the project_name and starting_date in the frontmatter.
     """
-    parent_path = Path(__file__).parent.parent
+    parent_path = Path(__file__).parent.parent.parent
     # create new project-folder from template
     try:
         copy_folder_template(project_name, parent_path / "project_templates" / template_name)

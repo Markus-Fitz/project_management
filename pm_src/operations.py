@@ -24,13 +24,13 @@ def copy_file_template(template_file: Path, destination: Path) -> None:
     destination.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(template_file, destination)
 
-def copy_folder_template(name: str, template_folder: Path = Path(__file__).parent.parent / "project_templates" / "Template_development") -> None:
+def copy_folder_template(name: str, template_folder: Path = Path(__file__).parent.parent.parent / "project_templates" / "Template_development") -> None:
     """
     Copy a template folder structure (vault) to a destination path.
     Raises FileExistsError if the destination already exists.
     Raises FileNotFoundError if the template does not exist.
     """
-    project_path = Path(__file__).parent.parent / name
+    project_path = Path(__file__).parent.parent.parent / name
     if project_path.exists():
         raise FileExistsError(f"Project folder already exsists: {project_path}")
     if not template_folder.exists():

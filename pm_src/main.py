@@ -7,7 +7,7 @@ from pathlib import Path
 project_name = "test_project"
 
 # Name of the parent directory everything happens in
-PARENT_DIR = Path(__file__).parent.parent
+PARENT_DIR = Path(__file__).parent.parent.parent
 
 # Name of the project directory which is subject to management
 PROJECT_DIR = PARENT_DIR / project_name
