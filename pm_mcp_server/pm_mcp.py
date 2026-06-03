@@ -51,7 +51,7 @@ TOOLS = [
                 },
                 "template_name": {
                     "type": "string",
-                    "description": "Template folder to use: Template_development for a hardware or programming project or Template_research for a resarch-focused project.",
+                    "description": "Template folder to use: Template_development for a hardware or programming project or a project with hard deadlines and a necessary outcome - Template_research for a resarch-focused project.",
                     "enum": ["Template_development", "Template_research"]
                 }
             },
