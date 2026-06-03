@@ -21,7 +21,7 @@ import uvicorn
 
 # ── Import your actual command functions ──────────────────────────────────────
 sys.path.insert(0, str(Path(__file__).parent.parent / "pm_src"))
-from commands import initialize_project , add_task, add_task_hours, add_note_hours#, mark_task_done, add_research_note, add_supplier, add_purchase
+from commands import initialize_project , add_task, add_task_hours, add_note_hours, add_research_note#, mark_task_done, add_research_note, add_supplier, add_purchase
 
 # ── Server configuration ──────────────────────────────────────────────────────
 HOST = "0.0.0.0"   # accepts connections from any machine on the network
@@ -53,7 +53,7 @@ TOOLS = [
                     "type": "string",
                     "description": "Template folder to use: Template_development for a hardware or programming project or Template_research for a resarch-focused project.",
                     "enum": ["Template_development", "Template_research"]
-                },
+                }
             },
             "required": ["project_name", "template_name"]
         }
@@ -61,17 +61,17 @@ TOOLS = [
 
     Tool(
         name="add_task",
-        description="Add a new task to an existing project.",
+        description="Add a new task to an existing project. Use for hardware or software development or anything where fixed deadlines or results are expected.",
         inputSchema={
             "type": "object",
             "properties": {
-                "task_name": {
-                    "type": "string",
-                    "description": "Short descriptive title for the task"
-                },
                 "project_name": {
                     "type": "string",
                     "description": "Name of the project in which to create the task"
+                },
+                "task_name": {
+                    "type": "string",
+                    "description": "Short descriptive title for the task"
                 }
             },
             "required": ["task_name", "project_name"]
@@ -84,13 +84,13 @@ TOOLS = [
         inputSchema={
             "type": "object",
             "properties": {
-                "task_name": {
-                    "type": "string",
-                    "description": "Title for the task"
-                },
                 "project_name": {
                     "type": "string",
                     "description": "Name of the project in which the task is located"
+                },
+                "task_name": {
+                    "type": "string",
+                    "description": "Title for the task"
                 },
                 "hours": {
                     "type": "string",
@@ -107,13 +107,13 @@ TOOLS = [
         inputSchema={
             "type": "object",
             "properties": {
-                "note_name": {
-                    "type": "string",
-                    "description": "Title for the task"
-                },
                 "project_name": {
                     "type": "string",
                     "description": "Name of the project in which the note is located"
+                },
+                "note_name": {
+                    "type": "string",
+                    "description": "Title for the task"
                 },
                 "hours": {
                     "type": "string",
@@ -124,29 +124,24 @@ TOOLS = [
         }
     ),
 
-    #Tool(
-    #    name="add_research_note",
-    #    description="Add a new research note to a research project. Use for papers, ideas, or observations.",
-    #    inputSchema={
-    #        "type": "object",
-    #        "properties": {
-    #            "project_id": {
-    #                "type": "string",
-    #                "description": "The project id the note belongs to"
-    #            },
-    #            "title": {
-    #                "type": "string",
-    #                "description": "Title of the note or paper"
-    #            },
-    #            "source_type": {
-    #                "type": "string",
-    #                "description": "Type of source",
-    #                "enum": ["paper", "book", "idea", "observation"]
-    #            }
-    #        },
-    #        "required": ["project_id", "title", "source_type"]
-    #    }
-    #),
+    Tool(
+        name="add_research_note",
+        description="Add a new research note to a research project. Use for papers, ideas, or observations with no specific outcome or deadline in mind.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "project_name": {
+                    "type": "string",
+                    "description": "The project id the note belongs to"
+                },
+                "note_name": {
+                    "type": "string",
+                    "description": "Title of the note or paper"
+                }
+            },
+            "required": ["project_name", "note_name"]
+        }
+    ),
 ]
 
 
@@ -160,7 +155,7 @@ TOOL_REGISTRY = {
     "add_note_hours":           add_note_hours,
     "add_task_hours":           add_task_hours,
     #"mark_task_done":           mark_task_done,
-    #"add_research_note":        add_research_note,
+    "add_research_note":        add_research_note,
     #"add_supplier":             add_supplier,
     #"add_purchase":             add_purchase
 }

@@ -58,21 +58,6 @@ def add_task_hours(project_name: str, task_name: str, hours: str) -> str:
     update_frontmatter(task_path, {"time_spent": hours})
     return "Hours successfully added to task."
 
-def add_note_hours(project_name: str, note_name: str, hours: str) -> str:
-    """
-    Adds a specified amount of hours to the current hour count.
-    """
-    parent_dir = Path(__file__).parent.parent.parent
-    project_dir = parent_dir / project_name
-    file_name = note_name + ".md"
-    task_path = project_dir / "Research_notes" / file_name
-    meta, _ = read_file(task_path)
-    current_hours = float(meta.get("time_spent", ""))
-    hours = float(hours)
-    hours += current_hours
-    update_frontmatter(task_path, {"time_spent": hours})
-    return "Hours successfully added to research note."
-
 def mark_task_done(task_path: Path) -> None:
     """
     Updates the frontmatter fields of a task and triggers corresponding logic.
@@ -84,23 +69,39 @@ def mark_task_done(task_path: Path) -> None:
         return
     update_frontmatter(task_path, {"status": "done", "end_date": datetime.now().date()})
 
-def add_research_note(project_dir: Path, name: str) -> None:
+def add_research_note(project_name: str, note_name: str) -> str:
     """
     Creates a new research_note in a project folder from the template file in that project folder.
     Project_note name, id and created_on date are always modified.
     """
-    file_name = name + ".md"
-    research_note_path = project_dir / "Research_notes" / file_name
+    parent_dir = Path(__file__).parent.parent.parent
+    project_dir = parent_dir / project_name
+    file_name = note_name + ".md"
+    note_path = project_dir / "Research_notes" / file_name
     try:
-        copy_file_template(project_dir / "Templates" / "Research_note.md", research_note_path)
+        copy_file_template(project_dir / "Templates" / "Research_note.md", note_path)
     except FileExistsError:
-        print("A research_note file with that name already exists.")
-        return
+        return "A research_note file with that name already exists."
     except FileNotFoundError:
-        print("The research_note template was not found.")
-        return
+        return "The research_note template was not found."
     next_id = get_next_id("*.md", "RES", project_dir / "Research_notes")
-    update_frontmatter(research_note_path, {"id": next_id, "created_on": datetime.now().date()})
+    update_frontmatter(note_path, {"id": next_id, "created_on": datetime.now().date()})
+    return "Research_note successfully created."
+
+def add_note_hours(project_name: str, note_name: str, hours: str) -> str:
+    """
+    Adds a specified amount of hours to the current hour count.
+    """
+    parent_dir = Path(__file__).parent.parent.parent
+    project_dir = parent_dir / project_name
+    file_name = note_name + ".md"
+    note_path = project_dir / "Research_notes" / file_name
+    meta, _ = read_file(note_path)
+    current_hours = float(meta.get("time_spent", ""))
+    hours = float(hours)
+    hours += current_hours
+    update_frontmatter(note_path, {"time_spent": hours})
+    return "Hours successfully added to research note."
 
 def add_supplier(project_dir: Path, name: str) -> None:
     """
