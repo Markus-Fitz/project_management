@@ -3,7 +3,7 @@ from datetime import datetime
 from pathlib import Path
 import re
 
-def initialize_project(project_name: str, template_name: str, starting_date:datetime.date = datetime.now().date()) -> None:
+def initialize_project(project_name: str, template_name: str, starting_date:datetime.date = datetime.now().date()) -> str:
     """
     Initializes a project from a template and sets the project_name and starting_date in the frontmatter.
     """
@@ -12,17 +12,17 @@ def initialize_project(project_name: str, template_name: str, starting_date:date
     try:
         copy_folder_template(project_name, parent_path / "project_templates" / template_name)
     except FileExistsError:
-        print("A folder with that name already exists.")
-        return # exit out of function
+        return "A folder with that name already exists."
     except FileNotFoundError:
-        print("The specified project template was not found.")
-        return # exit out of function
+        return "The specified project template was not found."
     
     #look for highest ID in the current directory and iterate by one
     next_id = get_next_id("*/Main_page.md", "PROJ", parent_path)
 
     # update frontmatter to match new project
     update_frontmatter(parent_path / project_name / "Main_page.md", {"id": next_id, "name": project_name, "created_on": str(starting_date)})
+
+    return "Project created successfully."
 
 def add_task(project_name: str, task_name: str) -> str:
     """

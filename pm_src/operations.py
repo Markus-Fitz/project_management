@@ -32,7 +32,7 @@ def copy_folder_template(name: str, template_folder: Path = Path(__file__).paren
     """
     project_path = Path(__file__).parent.parent.parent / name
     if project_path.exists():
-        raise FileExistsError(f"Project folder already exsists: {project_path}")
+        raise FileExistsError(f"Project folder already exists: {project_path}")
     if not template_folder.exists():
         raise FileNotFoundError(f"Template folder was not found: {template_folder}")
     
