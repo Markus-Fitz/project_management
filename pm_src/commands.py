@@ -63,8 +63,8 @@ def mark_task_done(task_path: Path) -> None:
     Updates the frontmatter fields of a task and triggers corresponding logic.
     """
     meta, _ = read_file(task_path)
-    match = re.fullmatch(rf"done", str(meta.get("status", "")))
-    if match:
+    match = meta.get("status", "")
+    if match == "done":
         print(f"Task at filepath {task_path} is alredy marked as done.")
         return
     update_frontmatter(task_path, {"status": "done", "end_date": datetime.now().date()})
