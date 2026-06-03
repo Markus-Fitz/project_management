@@ -43,14 +43,35 @@ def add_task(project_name: str, task_name: str) -> str:
     update_frontmatter(task_path, {"id": next_id, "created_on": datetime.now().date()})
     return "Task successfully created."
 
-def add_hours(path: Path, hours: float) -> None:
+def add_task_hours(project_name: str, task_name: str, hours_str: str) -> str:
     """
     Adds a specified amount of hours to the current hour count.
     """
-    meta, _ = read_file(path)
+    parent_dir = Path(__file__).parent.parent.parent
+    project_dir = parent_dir / project_name
+    file_name = task_name + ".md"
+    task_path = project_dir / "Tasks" / file_name
+    meta, _ = read_file(task_path)
     current_hours = float(meta.get("time_spent", ""))
+    hours = float(hours_str)
     hours += current_hours
-    update_frontmatter(path, {"time_spent": hours})
+    update_frontmatter(task_path, {"time_spent": hours})
+    return "Hours successfully added to task."
+
+def add_note_hours(project_name: str, note_name: str, hours_str: str) -> str:
+    """
+    Adds a specified amount of hours to the current hour count.
+    """
+    parent_dir = Path(__file__).parent.parent.parent
+    project_dir = parent_dir / project_name
+    file_name = note_name + ".md"
+    task_path = project_dir / "Research_notes" / file_name
+    meta, _ = read_file(task_path)
+    current_hours = float(meta.get("time_spent", ""))
+    hours = float(hours_str)
+    hours += current_hours
+    update_frontmatter(task_path, {"time_spent": hours})
+    return "Hours successfully added to research note."
 
 def mark_task_done(task_path: Path) -> None:
     """
