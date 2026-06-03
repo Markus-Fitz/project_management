@@ -157,7 +157,8 @@ TOOLS = [
 TOOL_REGISTRY = {
     "initialize_project":       initialize_project,
     "add_task":                 add_task,
-    "add_hours":                add_hours,
+    "add_note_hours":           add_note_hours,
+    "add_task_hours":           add_task_hours
     #"mark_task_done":           mark_task_done,
     #"add_research_note":        add_research_note,
     #"add_supplier":             add_supplier,
