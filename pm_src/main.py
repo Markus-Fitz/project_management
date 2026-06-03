@@ -53,11 +53,11 @@ initialize_project("test_res-proj", "Template_research")
 add_task("test_dev-proj", "test_task_ID-should-be-001")
 add_task("test_dev-proj", "test_task_ID-should-be-002")
 
-add_research_note(PARENT_DIR / "test_dev-proj", "test_note_ID-should-be-001")
-add_research_note(PARENT_DIR / "test_dev-proj", "test_note_ID-should-be-002")
+add_research_note("test_dev-proj", "test_note_ID-should-be-001")
+add_research_note("test_dev-proj", "test_note_ID-should-be-002")
 
-add_research_note(PARENT_DIR / "test_res-proj", "test_note_ID-should-be-001")
-add_research_note(PARENT_DIR / "test_res-proj", "test_note_ID-should-be-002")
+add_research_note("test_res-proj", "test_note_ID-should-be-001")
+add_research_note("test_res-proj", "test_note_ID-should-be-002")
 
 add_supplier(PARENT_DIR / "test_res-proj", "test-supplier_ID-should-be-001")
 add_supplier(PARENT_DIR / "test_res-proj", "test-supplier_ID-should-be-002")
