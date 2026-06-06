@@ -124,17 +124,21 @@ def add_supplier(project_dir: Path, name: str) -> str:
     update_frontmatter(supplier_path, {"id": next_id, "created_on": datetime.now().date()})
     return "Supplier created successfully."
 
-def add_purchase(project_dir: Path, name: str, linked_file: Path, linked_supplier: Path) -> str:
+def add_purchase(project_name: str, purchase_name: str, linked_file_dir: str, linked_file_name: str, linked_supplier: str) -> str:
     """
     Creates a new purchase in a project folder from the template file in that project folder.
     Purchase name, id, created_on date, linked file (Task / Research_note) and Supplier are always modified.
     """
-    if not linked_file.is_file():
-        return "Purchase not created, linked file does not exist."
-    if not linked_supplier.is_file():
-        return "Purchase not created, linked supplier does not exist."
-    file_name = name + ".md"
+    parent_dir = Path(__file__).parent.parent.parent
+    project_dir = parent_dir / project_name
+    file_name = purchase_name + ".md"
     purchase_path = project_dir / "Purchases" / file_name
+    linked_file_path = project_dir / linked_file_dir / (linked_file_name + ".md")
+    linked_supplier_path = project_dir / "Suppliers" / (linked_supplier + ".md")
+    if not linked_file_path.is_file():
+        return "Purchase not created, linked file does not exist."
+    if not linked_supplier_path.is_file():
+        return "Purchase not created, linked supplier does not exist."
     try:
         copy_file_template(project_dir / "Templates" / "Purchase.md", purchase_path)
     except FileExistsError:
@@ -142,5 +146,5 @@ def add_purchase(project_dir: Path, name: str, linked_file: Path, linked_supplie
     except FileNotFoundError:
         return "The purchase template was not found."
     next_id = get_next_id("*.md", "PUR", project_dir / "Purchases")
-    update_frontmatter(purchase_path, {"id": next_id, "created_on": datetime.now().date(), "purchase_linked_file": f"[[{linked_file.stem}]]", "supplier": f"[[{linked_supplier.stem}]]"})
-    return "Purchase created successfullly."
+    update_frontmatter(purchase_path, {"id": next_id, "created_on": datetime.now().date(), "purchase_linked_file": f"[[{linked_file_path.stem}]]", "supplier": f"[[{linked_supplier_path.stem}]]"})
+    return "Purchase created successfully."

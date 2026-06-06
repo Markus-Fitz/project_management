@@ -279,47 +279,43 @@ class TestAddPurchase(unittest.TestCase):
         initialize_project(self.name, "Template_research")
         add_research_note(self.name, "note_a")
         add_supplier(self.path, "supplier_a")
-        self.note_path = self.path / "Research_notes" / "note_a.md"
-        self.supplier_path = self.path / "Suppliers" / "supplier_a.md"
 
     def tearDown(self):
         shutil.rmtree(self.path)
 
     def test_creates_purchase_file(self):
-        add_purchase(self.path, "purchase_a", self.note_path, self.supplier_path)
+        add_purchase(self.name, "purchase_a", "Research_notes", "note_a", "supplier_a")
         self.assertTrue((self.path / "Purchases" / "purchase_a.md").exists())
 
     def test_sets_linked_file_in_frontmatter(self):
-        add_purchase(self.path, "purchase_a", self.note_path, self.supplier_path)
+        add_purchase(self.name, "purchase_a", "Research_notes", "note_a", "supplier_a")
         meta = fm.load(self.path / "Purchases" / "purchase_a.md").metadata
         self.assertIn("note_a", meta["purchase_linked_file"])
 
     def test_sets_supplier_in_frontmatter(self):
-        add_purchase(self.path, "purchase_a", self.note_path, self.supplier_path)
+        add_purchase(self.name, "purchase_a", "Research_notes", "note_a", "supplier_a")
         meta = fm.load(self.path / "Purchases" / "purchase_a.md").metadata
         self.assertIn("supplier_a", meta["supplier"])
 
     def test_assigns_pur_id(self):
-        add_purchase(self.path, "purchase_a", self.note_path, self.supplier_path)
+        add_purchase(self.name, "purchase_a", "Research_notes", "note_a", "supplier_a")
         meta = fm.load(self.path / "Purchases" / "purchase_a.md").metadata
         self.assertRegex(str(meta["id"]), r"PUR-\d{3}")
 
     def test_second_pur_gets_incremented_id(self):
-        add_purchase(self.path, "purchase_a", self.note_path, self.supplier_path)
-        add_purchase(self.path, "purchase_b", self.note_path, self.supplier_path)
+        add_purchase(self.name, "purchase_a", "Research_notes", "note_a", "supplier_a")
+        add_purchase(self.name, "purchase_b", "Research_notes", "note_a", "supplier_a")
         num_a = int(fm.load(self.path / "Purchases" / "purchase_a.md").metadata["id"].split("-")[1])
         num_b = int(fm.load(self.path / "Purchases" / "purchase_b.md").metadata["id"].split("-")[1])
         self.assertEqual(num_b, num_a + 1)
 
     def test_creates_error_if_linked_file_does_not_exist(self):
-        missing = self.path / "Research_notes" / "no_such.md"
-        result = add_purchase(self.path, "purchase_b", missing, self.supplier_path)
+        result = add_purchase(self.name, "purchase_b", "Research_notes", "no_such", "supplier_a")
         self.assertIn("does not exist", result)
         self.assertFalse((self.path / "Purchases" / "purchase_b.md").exists())
 
     def test_creates_error_if_supplier_does_not_exist(self):
-        missing = self.path / "Suppliers" / "no_such.md"
-        result = add_purchase(self.path, "purchase_c", self.note_path, missing)
+        result = add_purchase(self.name, "purchase_c", "Research_notes", "note_a", "no_such")
         self.assertIn("does not exist", result)
         self.assertFalse((self.path / "Purchases" / "purchase_c.md").exists())
 
