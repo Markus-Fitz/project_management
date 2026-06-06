@@ -21,7 +21,7 @@ import uvicorn
 
 # ── Import your actual command functions ──────────────────────────────────────
 sys.path.insert(0, str(Path(__file__).parent.parent / "pm_src"))
-from commands import initialize_project , add_task, add_task_hours, add_note_hours, add_research_note, mark_task_done#, add_research_note, add_supplier, add_purchase
+from commands import initialize_project , add_task, add_task_hours, add_note_hours, add_research_note, mark_task_done, get_project_structure#, add_research_note, add_supplier, add_purchase
 
 # ── Server configuration ──────────────────────────────────────────────────────
 HOST = "0.0.0.0"   # accepts connections from any machine on the network
@@ -47,7 +47,7 @@ TOOLS = [
             "properties": {
                 "project_name": {
                     "type": "string",
-                    "description": "Human readable project name"
+                    "description": "Human readable project name."
                 },
                 "template_name": {
                     "type": "string",
@@ -56,6 +56,21 @@ TOOLS = [
                 }
             },
             "required": ["project_name", "template_name"]
+        }
+    ),
+
+    Tool(
+        name="get_project_structure",
+        description="Gets the current structure of a project and presents the list of tasks and research notes with their respective metadata. Use if you or the user need more information about the specific task or note names or meta data in these files.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "project_name": {
+                    "type": "string",
+                    "description": "The name of the project of which the structure is fetched."
+                }
+            },
+            "required": ["project_name"]
         }
     ),
 
@@ -132,7 +147,7 @@ TOOLS = [
                 },
                 "note_name": {
                     "type": "string",
-                    "description": "Title for the task"
+                    "description": "Title of the research note"
                 },
                 "hours": {
                     "type": "string",
@@ -175,6 +190,7 @@ TOOL_REGISTRY = {
     "add_task_hours":           add_task_hours,
     "mark_task_done":           mark_task_done,
     "add_research_note":        add_research_note,
+    "get_project_structure":    get_project_structure,
     #"add_supplier":             add_supplier,
     #"add_purchase":             add_purchase
 }

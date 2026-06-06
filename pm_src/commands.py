@@ -126,6 +126,61 @@ def add_supplier(project_name:str, supplier_name: str) -> str:
     update_frontmatter(supplier_path, {"id": next_id, "created_on": datetime.now().date()})
     return "Supplier created successfully."
 
+def get_project_structure(project_name: str) -> dict:
+    """
+    Returns an overview of a project: project metadata, all tasks, and all research notes.
+    Files without a valid ID (e.g. README.md) are skipped.
+    All date fields are returned as strings for JSON compatibility.
+    """
+    parent_dir = Path(__file__).parent.parent.parent
+    project_dir = parent_dir / project_name
+
+    meta, _ = read_file(project_dir / "Main_page.md")
+    project_info = {
+        "id":         str(meta.get("id", "")),
+        "name":       str(meta.get("name", project_name)),
+        "status":     str(meta.get("status", "")),
+        "created_on": str(meta.get("created_on", ""))
+    }
+
+    tasks = []
+    tasks_dir = project_dir / "Tasks"
+    if tasks_dir.exists():
+        for file in sorted(tasks_dir.glob("*.md")):
+            meta, _ = read_file(file)
+            if not re.fullmatch(r"TASK-\d+", str(meta.get("id", ""))):
+                continue
+            tasks.append({
+                "name":       file.stem,
+                "id":         str(meta.get("id", "")),
+                "status":     str(meta.get("status", "")),
+                "priority":   meta.get("priority", None),
+                "time_spent": float(meta.get("time_spent", 0.0)),
+                "created_on": str(meta.get("created_on", "")),
+                "end_date":   str(meta.get("end_date")) if meta.get("end_date") else None
+            })
+
+    research_notes = []
+    notes_dir = project_dir / "Research_notes"
+    if notes_dir.exists():
+        for file in sorted(notes_dir.glob("*.md")):
+            meta, _ = read_file(file)
+            if not re.fullmatch(r"RES-\d+", str(meta.get("id", ""))):
+                continue
+            research_notes.append({
+                "name":       file.stem,
+                "id":         str(meta.get("id", "")),
+                "time_spent": float(meta.get("time_spent", 0.0)),
+                "created_on": str(meta.get("created_on", ""))
+            })
+
+    return {
+        "project":        project_info,
+        "tasks":          tasks,
+        "research_notes": research_notes
+    }
+
+
 def add_purchase(project_name: str, purchase_name: str, linked_file_dir: str, linked_file_name: str, linked_supplier: str) -> str:
     """
     Creates a new purchase in a project folder from the template file in that project folder.
