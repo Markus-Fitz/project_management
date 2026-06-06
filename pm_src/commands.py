@@ -58,16 +58,16 @@ def add_task_hours(project_name: str, task_name: str, hours: str) -> str:
     update_frontmatter(task_path, {"time_spent": hours})
     return "Hours successfully added to task."
 
-def mark_task_done(task_path: Path) -> None:
+def mark_task_done(task_path: Path) -> str:
     """
     Updates the frontmatter fields of a task and triggers corresponding logic.
     """
     meta, _ = read_file(task_path)
     match = meta.get("status", "")
     if match == "done":
-        print(f"Task at filepath {task_path} is alredy marked as done.")
-        return
+        return f"Task at filepath {task_path} is already marked as done."
     update_frontmatter(task_path, {"status": "done", "end_date": datetime.now().date()})
+    return "Task successfully marked as done."
 
 def add_research_note(project_name: str, note_name: str) -> str:
     """
@@ -103,7 +103,7 @@ def add_note_hours(project_name: str, note_name: str, hours: str) -> str:
     update_frontmatter(note_path, {"time_spent": hours})
     return "Hours successfully added to research note."
 
-def add_supplier(project_dir: Path, name: str) -> None:
+def add_supplier(project_dir: Path, name: str) -> str:
     """
     Creates a new supplier in a project folder from the template file in that project folder.
     Supplier name, id and created_on date are always modified.
@@ -113,34 +113,30 @@ def add_supplier(project_dir: Path, name: str) -> None:
     try:
         copy_file_template(project_dir / "Templates" / "Supplier.md", supplier_path)
     except FileExistsError:
-        print("A supplier file with that name already exists.")
-        return
+        return "A supplier file with that name already exists."
     except FileNotFoundError:
-        print("The supplier template was not found.")
-        return
+        return "The supplier template was not found."
     next_id = get_next_id("*.md", "SUP", project_dir / "Suppliers")
     update_frontmatter(supplier_path, {"id": next_id, "created_on": datetime.now().date()})
+    return "Supplier created successfully."
 
-def add_purchase(project_dir: Path, name: str, linked_file: Path, linked_supplier: Path) -> None:
+def add_purchase(project_dir: Path, name: str, linked_file: Path, linked_supplier: Path) -> str:
     """
     Creates a new purchase in a project folder from the template file in that project folder.
     Purchase name, id, created_on date, linked file (Task / Research_note) and Supplier are always modified.
     """
     if not linked_file.is_file():
-        print("Purchase not created, linked file does not exist.")
-        return
+        return "Purchase not created, linked file does not exist."
     if not linked_supplier.is_file():
-        print("Purchase not created, linked supplier does not exist.")
-        return
+        return "Purchase not created, linked supplier does not exist."
     file_name = name + ".md"
     purchase_path = project_dir / "Purchases" / file_name
     try:
         copy_file_template(project_dir / "Templates" / "Purchase.md", purchase_path)
     except FileExistsError:
-        print("A purchase file with that name already exists.")
-        return
+        return "A purchase file with that name already exists."
     except FileNotFoundError:
-        print("The purchase template was not found.")
-        return
+        return "The purchase template was not found."
     next_id = get_next_id("*.md", "PUR", project_dir / "Purchases")
     update_frontmatter(purchase_path, {"id": next_id, "created_on": datetime.now().date(), "purchase_linked_file": f"[[{linked_file.stem}]]", "supplier": f"[[{linked_supplier.stem}]]"})
+    return "Purchase created successfullly."
