@@ -21,7 +21,7 @@ import uvicorn
 
 # ── Import your actual command functions ──────────────────────────────────────
 sys.path.insert(0, str(Path(__file__).parent.parent / "pm_src"))
-from commands import initialize_project , add_task, add_task_hours, add_note_hours, add_research_note#, mark_task_done, add_research_note, add_supplier, add_purchase
+from commands import initialize_project , add_task, add_task_hours, add_note_hours, add_research_note, mark_task_done#, add_research_note, add_supplier, add_purchase
 
 # ── Server configuration ──────────────────────────────────────────────────────
 HOST = "0.0.0.0"   # accepts connections from any machine on the network
@@ -80,7 +80,7 @@ TOOLS = [
 
     Tool(
         name="add_task_hours",
-        description="Adds hours to an existing task in a specified project.",
+        description="Adds hours to an existing task in a specified project. Use if time was used on a certain task and the user wants to update the hour-count.",
         inputSchema={
             "type": "object",
             "properties": {
@@ -98,6 +98,25 @@ TOOLS = [
                 }
             },
             "required": ["task_name", "project_name", "hours"]
+        }
+    ),
+
+    Tool(
+        name="mark_task_done",
+        description="Updates the status of a task to done and sets the end_date to the current date. Use if a task is described as done and user expresses that the task should be updated accordingly.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "project_name": {
+                    "type": "string",
+                    "description": "Name of the project in whcih the task is located."
+                },
+                "task_name": {
+                    "type": "string",
+                    "description" : "Name of the task for which the status should be changed to done."
+                }
+            },
+            "required": ["project_name", "task_name"]
         }
     ),
 
@@ -154,7 +173,7 @@ TOOL_REGISTRY = {
     "add_task":                 add_task,
     "add_note_hours":           add_note_hours,
     "add_task_hours":           add_task_hours,
-    #"mark_task_done":           mark_task_done,
+    "mark_task_done":           mark_task_done,
     "add_research_note":        add_research_note,
     #"add_supplier":             add_supplier,
     #"add_purchase":             add_purchase
