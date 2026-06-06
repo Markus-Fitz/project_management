@@ -16,6 +16,7 @@ from commands import (
     add_note_hours,
     add_supplier,
     add_purchase,
+    get_project_structure,
 )
 
 WORKSPACE = Path(__file__).parent.parent.parent
@@ -318,6 +319,83 @@ class TestAddPurchase(unittest.TestCase):
         result = add_purchase(self.name, "purchase_c", "Research_notes", "note_a", "no_such")
         self.assertIn("does not exist", result)
         self.assertFalse((self.path / "Purchases" / "purchase_c.md").exists())
+
+
+class TestGetProjectStructure(unittest.TestCase):
+    def setUp(self):
+        self.name = unique_name()
+        self.path = WORKSPACE / self.name
+        initialize_project(self.name, "Template_development")
+
+    def tearDown(self):
+        shutil.rmtree(self.path)
+
+    def test_returns_top_level_keys(self):
+        result = get_project_structure(self.name)
+        self.assertIn("project", result)
+        self.assertIn("tasks", result)
+        self.assertIn("research_notes", result)
+
+    def test_project_metadata_is_correct(self):
+        result = get_project_structure(self.name)
+        self.assertEqual(result["project"]["name"], self.name)
+        self.assertRegex(result["project"]["id"], r"PROJ-\d{3}")
+
+    def test_empty_project_has_no_tasks_or_notes(self):
+        result = get_project_structure(self.name)
+        self.assertEqual(result["tasks"], [])
+        self.assertEqual(result["research_notes"], [])
+
+    def test_readme_files_are_excluded(self):
+        result = get_project_structure(self.name)
+        all_names = [t["name"] for t in result["tasks"]] + [n["name"] for n in result["research_notes"]]
+        self.assertNotIn("README", all_names)
+
+    def test_added_task_appears_in_result(self):
+        add_task(self.name, "my_task")
+        result = get_project_structure(self.name)
+        self.assertEqual(len(result["tasks"]), 1)
+        self.assertEqual(result["tasks"][0]["name"], "my_task")
+        self.assertRegex(result["tasks"][0]["id"], r"TASK-\d{3}")
+
+    def test_added_note_appears_in_result(self):
+        add_research_note(self.name, "my_note")
+        result = get_project_structure(self.name)
+        self.assertEqual(len(result["research_notes"]), 1)
+        self.assertEqual(result["research_notes"][0]["name"], "my_note")
+        self.assertRegex(result["research_notes"][0]["id"], r"RES-\d{3}")
+
+    def test_task_hours_are_reflected(self):
+        add_task(self.name, "my_task")
+        add_task_hours(self.name, "my_task", "2.5")
+        result = get_project_structure(self.name)
+        self.assertEqual(result["tasks"][0]["time_spent"], 2.5)
+
+    def test_note_hours_are_reflected(self):
+        add_research_note(self.name, "my_note")
+        add_note_hours(self.name, "my_note", "1.5")
+        result = get_project_structure(self.name)
+        self.assertEqual(result["research_notes"][0]["time_spent"], 1.5)
+
+    def test_mark_task_done_is_reflected(self):
+        add_task(self.name, "my_task")
+        mark_task_done(self.name, "my_task")
+        result = get_project_structure(self.name)
+        self.assertEqual(result["tasks"][0]["status"], "done")
+        self.assertIsNotNone(result["tasks"][0]["end_date"])
+
+    def test_open_task_has_no_end_date(self):
+        add_task(self.name, "my_task")
+        result = get_project_structure(self.name)
+        self.assertIsNone(result["tasks"][0]["end_date"])
+
+    def test_multiple_tasks_and_notes_all_appear(self):
+        add_task(self.name, "task_a")
+        add_task(self.name, "task_b")
+        add_research_note(self.name, "note_a")
+        result = get_project_structure(self.name)
+        self.assertEqual(len(result["tasks"]), 2)
+        self.assertEqual(len(result["research_notes"]), 1)
 
 
 if __name__ == "__main__":
