@@ -216,22 +216,22 @@ class TestMarkTaskDone(unittest.TestCase):
         shutil.rmtree(self.path)
 
     def test_sets_status_to_done(self):
-        mark_task_done(self.task_path)
+        mark_task_done(self.name, "my_task")
         meta = fm.load(self.task_path).metadata
         self.assertEqual(meta["status"], "done")
 
     def test_sets_end_date_to_today(self):
-        mark_task_done(self.task_path)
+        mark_task_done(self.name, "my_task")
         meta = fm.load(self.task_path).metadata
         self.assertEqual(meta["end_date"], date.today())
 
     def test_returns_success_message(self):
-        result = mark_task_done(self.task_path)
+        result = mark_task_done(self.name, "my_task")
         self.assertIn("successfully", result)
 
     def test_returns_error_if_already_marked_as_done(self):
-        mark_task_done(self.task_path)
-        result = mark_task_done(self.task_path)
+        mark_task_done(self.name, "my_task")
+        result = mark_task_done(self.name, "my_task")
         self.assertIn("already", result)
 
 

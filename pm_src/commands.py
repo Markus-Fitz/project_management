@@ -58,10 +58,14 @@ def add_task_hours(project_name: str, task_name: str, hours: str) -> str:
     update_frontmatter(task_path, {"time_spent": hours})
     return "Hours successfully added to task."
 
-def mark_task_done(task_path: Path) -> str:
+def mark_task_done(project_name: str, task_name: str) -> str:
     """
     Updates the frontmatter fields of a task and triggers corresponding logic.
     """
+    parent_dir = Path(__file__).parent.parent.parent
+    project_dir = parent_dir / project_name
+    file_name = task_name + ".md"
+    task_path = project_dir / "Tasks" / file_name
     meta, _ = read_file(task_path)
     match = meta.get("status", "")
     if match == "done":
