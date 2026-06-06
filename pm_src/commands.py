@@ -3,7 +3,7 @@ from datetime import datetime
 from pathlib import Path
 import re
 
-def initialize_project(project_name: str, template_name: str, starting_date:datetime.date = datetime.now().date()) -> str:
+def initialize_project(project_name: str, template_name: str, starting_date:str = str(datetime.now().date())) -> str:
     """
     Initializes a project from a template and sets the project_name and starting_date in the frontmatter.
     """
@@ -20,7 +20,7 @@ def initialize_project(project_name: str, template_name: str, starting_date:date
     next_id = get_next_id("*/Main_page.md", "PROJ", parent_path)
 
     # update frontmatter to match new project
-    update_frontmatter(parent_path / project_name / "Main_page.md", {"id": next_id, "name": project_name, "created_on": str(starting_date)})
+    update_frontmatter(parent_path / project_name / "Main_page.md", {"id": next_id, "name": project_name, "created_on": starting_date})
 
     return "Project created successfully."
 
@@ -107,12 +107,14 @@ def add_note_hours(project_name: str, note_name: str, hours: str) -> str:
     update_frontmatter(note_path, {"time_spent": hours})
     return "Hours successfully added to research note."
 
-def add_supplier(project_dir: Path, name: str) -> str:
+def add_supplier(project_name:str, supplier_name: str) -> str:
     """
     Creates a new supplier in a project folder from the template file in that project folder.
     Supplier name, id and created_on date are always modified.
     """
-    file_name = name + ".md"
+    parent_dir = Path(__file__).parent.parent.parent
+    project_dir = parent_dir / project_name
+    file_name = supplier_name + ".md"
     supplier_path = project_dir / "Suppliers" / file_name
     try:
         copy_file_template(project_dir / "Templates" / "Supplier.md", supplier_path)

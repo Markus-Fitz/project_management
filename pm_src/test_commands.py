@@ -245,30 +245,30 @@ class TestAddSupplier(unittest.TestCase):
         shutil.rmtree(self.path)
 
     def test_creates_supplier_file(self):
-        add_supplier(self.path, "supplier_a")
+        add_supplier(self.name, "supplier_a")
         self.assertTrue((self.path / "Suppliers" / "supplier_a.md").exists())
 
     def test_assigns_sup_id(self):
-        add_supplier(self.path, "supplier_a")
+        add_supplier(self.name, "supplier_a")
         meta = fm.load(self.path / "Suppliers" / "supplier_a.md").metadata
         self.assertRegex(str(meta["id"]), r"SUP-\d{3}")
 
     def test_second_supplier_gets_incremented_id(self):
-        add_supplier(self.path, "supplier_a")
-        add_supplier(self.path, "supplier_b")
+        add_supplier(self.name, "supplier_a")
+        add_supplier(self.name, "supplier_b")
         num_a = int(fm.load(self.path / "Suppliers" / "supplier_a.md").metadata["id"].split("-")[1])
         num_b = int(fm.load(self.path / "Suppliers" / "supplier_b.md").metadata["id"].split("-")[1])
         self.assertEqual(num_b, num_a + 1)
 
     def test_returns_error_if_supplier_already_exists(self):
-        add_supplier(self.path, "supplier_a")
+        add_supplier(self.name, "supplier_a")
         original_id = fm.load(self.path / "Suppliers" / "supplier_a.md").metadata["id"]
-        result = add_supplier(self.path, "supplier_a")
+        result = add_supplier(self.name, "supplier_a")
         self.assertIn("already", result)
         self.assertEqual(fm.load(self.path / "Suppliers" / "supplier_a.md").metadata["id"], original_id)
 
     def test_returns_success_message(self):
-        result = add_supplier(self.path, "supplier_a")
+        result = add_supplier(self.name, "supplier_a")
         self.assertIn("successfully", result)
 
 
@@ -278,7 +278,7 @@ class TestAddPurchase(unittest.TestCase):
         self.path = WORKSPACE / self.name
         initialize_project(self.name, "Template_research")
         add_research_note(self.name, "note_a")
-        add_supplier(self.path, "supplier_a")
+        add_supplier(self.name, "supplier_a")
 
     def tearDown(self):
         shutil.rmtree(self.path)
