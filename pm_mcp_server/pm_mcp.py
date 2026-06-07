@@ -21,7 +21,7 @@ import uvicorn
 
 # ── Import your actual command functions ──────────────────────────────────────
 sys.path.insert(0, str(Path(__file__).parent.parent / "pm_src"))
-from commands import initialize_project , add_task, add_task_hours, add_note_hours, add_research_note, mark_task_done, get_project_structure#, add_research_note, add_supplier, add_purchase
+from commands import initialize_project, add_task, add_task_hours, add_note_hours, add_research_note, mark_task_done, get_project_structure, add_supplier, add_purchase
 
 # ── Server configuration ──────────────────────────────────────────────────────
 HOST = "0.0.0.0"   # accepts connections from any machine on the network
@@ -176,6 +176,57 @@ TOOLS = [
             "required": ["project_name", "note_name"]
         }
     ),
+
+    Tool(
+        name="add_supplier",
+        description="Adds a supplier.md file in the Suppliers directory from a template. Use if the user wants to create a new supplier.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "project_name": {
+                    "type": "string",
+                    "description": "Name of the project to which the supplier will be added"
+                },
+                "supplier_name": {
+                    "type": "string",
+                    "description": "Name of the supplier to be added"
+                }
+            },
+            "required": ["project_name", "supplier_name"]
+        }
+    ),
+
+    Tool(
+        name="add_purchase",
+        description="Adds a purchase to a specified project, linked to a specified supplier and to a specified file (research_note or task).",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "project_name": {
+                    "type": "string",
+                    "description": "Name of the project in which to create the purchase file"
+                },
+                "purchase_name": {
+                    "type": "string",
+                    "description": "Name of the purchase to create"
+                },
+                "linked_file_dir": {
+                    "type": "string",
+                    "description": "The subdirectory containing the linked file — either 'Tasks' or 'Research_notes'.",
+                    "enum": ["Tasks", "Research_notes"]
+                },
+                "linked_file_name": {
+                    "type": "string",
+                    "description": "Name of the file the purchase should link to"
+                },
+                "linked_supplier": {
+                    "type": "string",
+                    "description": "Name of the supplier that the purchase should link to"
+                }
+            },
+            "required": ["project_name", "purchase_name", "linked_file_dir", "linked_file_name", "linked_supplier"]
+        }
+    )
 ]
 
 
@@ -191,8 +242,8 @@ TOOL_REGISTRY = {
     "mark_task_done":           mark_task_done,
     "add_research_note":        add_research_note,
     "get_project_structure":    get_project_structure,
-    #"add_supplier":             add_supplier,
-    #"add_purchase":             add_purchase
+    "add_supplier":             add_supplier,
+    "add_purchase":             add_purchase
 }
 
 
